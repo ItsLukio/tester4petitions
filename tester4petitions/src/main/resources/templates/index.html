@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Petitions Testing 123</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Welcome to Petitions</title>
 </head>
 <body>
-<header>
-  <h1>Petitions</h1>
-</header>
-<main id="main-content"></main>
-<script src="app.js"></script>
+<h1>Welcome to the Petitions Application</h1>
+<ul>
+  <li><a th:href="@{/create}">Create a Petition</a></li>
+  <li><a th:href="@{/viewAll}">View All Petitions</a></li>
+  <li><a th:href="@{/search}">Search for a Petition</a></li>
+</ul>
 </body>
 </html>
