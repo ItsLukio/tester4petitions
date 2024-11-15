@@ -4,14 +4,18 @@ pipeline {
     stages {
         stage('Get Project') {
             steps {
-                git 'https://github.com/ItsLukio/tester4petitions.git'
+                git branch: 'main', url: 'https://github.com/ItsLukio/tester4petitions.git'
+            }
+        }
+        stage('Debug Workspace') {
+            steps {
+                sh 'ls -la'
             }
         }
         stage('Build') {
             steps {
-                sh 'mvn clean'
-                sh 'mvn dependency:copy-dependencies'
-                sh 'mvn compile'
+                sh './mvnw clean'
+                sh './mvnw compile'
             }
         }
         stage('Test') {
@@ -22,7 +26,7 @@ pipeline {
         }
         stage('Package') {
             steps {
-                sh 'mvn package'
+                sh './mvnw package'
             }
         }
     }
