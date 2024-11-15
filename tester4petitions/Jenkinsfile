@@ -13,13 +13,13 @@ pipeline {
                 sh 'ls -la'
             }
         }
-        stage ('build') {
+        stage('Build') {
             steps {
-                sh 'mvn clean:clean'
-                sh 'mvn dependency:copy-dependencies'
-                sh 'mvn compiler:compile'
-            }
-        }
+                sh 'cd tester4petitions && mvn clean:clean'
+                sh 'cd tester4petitions && mvn dependency:copy-dependencies'
+                sh 'cd tester4petitions && mvn compiler:compile'
+    }
+}
         stage('Test') {
             steps {
                 sh 'make check || true'
