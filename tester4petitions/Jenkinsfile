@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Get Project') {
             steps {
-                git branch: 'main', url: 'https://github.com/ItsLukio/tester4petitions.git'
+                git branch: 'master', url: 'https://github.com/ItsLukio/tester4petitions.git'
             }
         }
         stage('Debug Workspace') {
