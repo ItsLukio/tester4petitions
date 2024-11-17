@@ -13,6 +13,11 @@ pipeline {
                 sh 'ls -la'
             }
         }
+        stage('Set Permissions') {
+            steps {
+                sh 'chmod +x tester4petitions/mvnw'
+            }
+        }
         stage('Build') {
             steps {
                 sh 'cd tester4petitions && mvn clean:clean'
