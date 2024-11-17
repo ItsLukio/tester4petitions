@@ -22,10 +22,14 @@ pipeline {
 }
         stage('Test') {
             steps {
-                sh 'make check || true'
-                junit '**/target/*.xml'
+                sh 'cd tester4petitions && mvn test'
             }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
         }
+    }
+}
         stage('Package') {
             steps {
                 sh './mvnw package'
