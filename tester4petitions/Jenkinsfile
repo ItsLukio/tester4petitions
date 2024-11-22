@@ -55,16 +55,22 @@ pipeline {
         // Stage to deploy the application using Docker
         stage('Deploy') {
             steps {
-        // Ensure the WAR is built before Docker build
-                sh 'cd tester4petitions && ./mvnw package'
-        
-        // Build from tester4petitions directory
+                // Ensure WAR is built
+                sh 'cd tester4petitions && ./mvnw clean package'
+                
+                // Verify WAR file exists
+                sh 'cd tester4petitions && ls -l target/*.war'
+                
+                // Build Docker image
                 sh 'cd tester4petitions && docker build -t myapp .'
-        
-                 sh 'docker rm -f "myappcontainer" || true'
+                
+                // Remove existing container
+                sh 'docker rm -f "myappcontainer" || true'
+                
+                // Run new container
                 sh 'docker run --name "myappcontainer" -p 8081:8080 --detach myapp:latest'
-    }
-}
+            }
+        }
     }
 
     // Post-build actions
