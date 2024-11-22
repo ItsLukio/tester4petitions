@@ -56,7 +56,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 // Build the Docker image
-                sh 'docker build -f Dockerfile -t myapp .'
+                sh 'docker build -f tester4petitions/Dockerfile -t myapp .'
 
                 // Remove any existing container named "myappcontainer"
                 sh 'docker rm -f "myappcontainer" || true'
