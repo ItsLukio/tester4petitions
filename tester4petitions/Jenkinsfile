@@ -55,14 +55,16 @@ pipeline {
         // Stage to deploy the application using Docker
         stage('Deploy') {
             steps {
-        // Build the Docker image from the tester4petitions directory
-                sh 'cd tester4petitions && docker build -f Dockerfile -t myapp .'
-        // Remove any existing container named "myappcontainer"
-                sh 'docker rm -f "myappcontainer" || true'
-        // Run the Docker container from the built image
+        // Ensure the WAR is built before Docker build
+                sh 'cd tester4petitions && ./mvnw package'
+        
+        // Build from tester4petitions directory
+                sh 'cd tester4petitions && docker build -t myapp .'
+        
+                 sh 'docker rm -f "myappcontainer" || true'
                 sh 'docker run --name "myappcontainer" -p 8081:8080 --detach myapp:latest'
-            }
-        }
+    }
+}
     }
 
     // Post-build actions
