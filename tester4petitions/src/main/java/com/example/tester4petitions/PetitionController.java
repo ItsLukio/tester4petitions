@@ -37,7 +37,7 @@ public class PetitionController {
             @RequestParam("description") String description) {
         Petition newPetition = new Petition(petitions.size() + 1, title, description);
         petitions.add(newPetition);
-        return "redirect:/viewAll";
+        return "redirect:viewAll";  // Use relative path
     }
 
     // Page to view all petitions
