@@ -2,57 +2,82 @@ pipeline {
     agent any
 
     stages {
+        // Stage to get the project from GitHub
         stage('Get Project') {
             steps {
                 git branch: 'master', url: 'https://github.com/ItsLukio/tester4petitions.git'
             }
         }
+
+        // Stage to debug and display workspace contents
         stage('Debug Workspace') {
             steps {
-                sh 'pwd'
-                sh 'ls -la'
+                sh 'pwd'  // Display current directory
+                sh 'ls -la'  // List files and directories in current workspace
             }
         }
+
+        // Stage to set execution permissions for the Maven wrapper
         stage('Set Permissions') {
             steps {
                 sh 'chmod +x tester4petitions/mvnw'
             }
         }
+
+        // Stage to clean the project and compile dependencies
         stage('Build') {
             steps {
-                sh 'cd tester4petitions && mvn clean:clean'
-                sh 'cd tester4petitions && mvn dependency:copy-dependencies'
-                sh 'cd tester4petitions && mvn compiler:compile'
-    }
-}
+                sh 'cd tester4petitions && mvn clean:clean'  // Clean the project
+                sh 'cd tester4petitions && mvn dependency:copy-dependencies'  // Copy dependencies
+                sh 'cd tester4petitions && mvn compile'  // Compile the project
+            }
+        }
+
+        // Stage to run tests
         stage('Test') {
             steps {
-                sh 'cd tester4petitions && mvn test'
+                sh 'cd tester4petitions && mvn test'  // Run tests
             }
             post {
                 always {
-                    junit '**/target/surefire-reports/*.xml'
+                    junit '**/tester4petitions/target/surefire-reports/*.xml'  // Archive test results
+                }
+            }
         }
-    }
-}
+
+        // Stage to package the project as a WAR file
         stage('Package') {
             steps {
-                sh 'cd tester4petitions && ./mvnw package'
+                sh 'cd tester4petitions && ./mvnw package'  // Package the project using Maven wrapper
+            }
+        }
+
+        // Stage to deploy the application using Docker
+        stage('Deploy') {
+            steps {
+                // Ensure WAR is built
+                sh 'cd tester4petitions && ./mvnw clean package'
+                
+                // Verify WAR file exists
+                sh 'cd tester4petitions && ls -l target/*.war'
+                
+                // Build Docker image
+                sh 'cd tester4petitions && docker build -t myapp .'
+                
+                // Remove existing container
+                sh 'docker rm -f "myappcontainer" || true'
+                
+                // Run new container
+                sh 'docker run --name "myappcontainer" -p 8081:8080 --detach myapp:latest'
             }
         }
     }
 
+    // Post-build actions
     post {
         success {
-            archiveArtifacts artifacts: '**/tester4petitions*.war', allowEmptyArchive: true
+            // Archive the WAR file after a successful build
+            archiveArtifacts artifacts: '**/tester4petitions/target/*.war', allowEmptyArchive: true
         }
     }
-       stage ('Deploy')
-        {
-            steps {
-                sh 'docker build -f Dockerfile -t myapp . '
-                sh 'docker rm -f "myappcontainer" || true'
-                sh 'docker run --name "myappcontainer" -p 8081:8080 --detach myapp:latest'
-            }
-        }
 }
