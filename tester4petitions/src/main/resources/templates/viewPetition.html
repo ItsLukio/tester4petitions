@@ -18,5 +18,20 @@
 
     <button type="submit">Sign Petition</button>
 </form>
+<div id="content"></div>
+<script>
+    function loadPage(url) {
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function(data) {
+                $('#content').html(data);
+            },
+            error: function() {
+                alert('Error loading page');
+            }
+        });
+    }
+</script>
 </body>
 </html>
