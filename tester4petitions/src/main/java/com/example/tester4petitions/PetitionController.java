@@ -1,54 +1,44 @@
 package com.example.tester4petitions;
 
-
-
-import com.example.tester4petitions.Petition; // Import the Petition class
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.ui.Model;
-import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.PathVariable;
 import javax.annotation.PostConstruct;
-
-
-
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class PetitionController {
 
     private List<Petition> petitions = new ArrayList<>(); // In-memory list of petitions
 
-    // Page to create a petition
     @GetMapping("/create")
     public String showCreatePetitionPage() {
-        return "createPetitions"; // This renders the createPetition.html template
+        return "createPetitions :: content"; // Return partial view for AJAX
     }
 
-    // Handling the form submission for creating a petition
     @PostMapping("/create")
     public String createPetition(
             @RequestParam("title") String title,
             @RequestParam("description") String description) {
         Petition newPetition = new Petition(petitions.size() + 1, title, description);
         petitions.add(newPetition);
-        return "redirect:viewAll";  // Use relative path
+        return "redirect:viewAll";
     }
 
-    // Page to view all petitions
     @GetMapping("/viewAll")
     public String showAllPetitions(Model model) {
         model.addAttribute("petitions", petitions);
-        return "viewAllPetitions"; // This renders the viewAllPetitions.html template
+        return "viewAllPetitions :: content"; // Return partial view for AJAX
     }
+
     @GetMapping("/search")
     public String showSearchPage() {
-        return "searchPetition"; // Renders searchPetition.html
+        return "searchPetition :: content"; // Return partial view for AJAX
     }
 
     @GetMapping("/searchResults")
@@ -57,9 +47,9 @@ public class PetitionController {
                 .filter(petition -> petition.getTitle().toLowerCase().contains(title.toLowerCase()))
                 .collect(Collectors.toList());
         model.addAttribute("results", results);
-        return "searchResults"; // Renders searchResults.html
+        return "searchResults :: content"; // Return partial view for AJAX
     }
-    // View petition details
+
     @GetMapping("/petition/{id}")
     public String viewPetition(@PathVariable("id") int id, Model model) {
         Petition petition = petitions.stream()
@@ -67,17 +57,15 @@ public class PetitionController {
                 .findFirst()
                 .orElse(null);
         model.addAttribute("petition", petition);
-        return "viewPetition"; // Renders viewPetition.html
+        return "viewPetition :: content"; // Return partial view for AJAX
     }
 
-    // Handle signing a petition
     @PostMapping("/petition/{id}/sign")
     public String signPetition(@PathVariable("id") int id,
                                @RequestParam("name") String name,
                                @RequestParam("email") String email) {
-        // For now, we simply acknowledge the signing without storing it
         System.out.println("Petition " + id + " signed by " + name + " (" + email + ")");
-        return "redirect:/viewAll"; // Redirect to view all petitions
+        return "redirect:/viewAll";
     }
 
     @PostConstruct
@@ -85,13 +73,10 @@ public class PetitionController {
         petitions.add(new Petition(1, "Save the Rainforest", "Help us protect the rainforest."));
         petitions.add(new Petition(2, "Reduce Plastic Waste", "Join us in reducing plastic waste."));
         petitions.add(new Petition(3, "Support Clean Energy", "Sign this petition to support clean energy."));
-
     }
+
     @GetMapping("/")
     public String showLandingPage() {
         return "index"; // Renders index.html as the default landing page
     }
-
-    // Additional methods for searching and viewing individual petitions could go here
 }
-

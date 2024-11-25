@@ -2,13 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Lukespetitions</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 <h1 style="text-align:center;">Lukespetitions</h1>
 <ul>
-  <li><a th:href="@{/create}">Create a Petition</a></li>
-  <li><a th:href="@{/viewAll}">View All Petitions</a></li>
-  <li><a th:href="@{/search}">Search for a Petition</a></li>
+  <li><a href="#" onclick="loadPage('/create')">Create a Petition</a></li>
+  <li><a href="#" onclick="loadPage('/viewAll')">View All Petitions</a></li>
+  <li><a href="#" onclick="loadPage('/search')">Search for a Petition</a></li>
 </ul>
+<div id="content"></div>
+<script>
+  function loadPage(url) {
+      $.ajax({
+          url: url,
+          method: 'GET',
+          success: function(data) {
+              $('#content').html(data);
+          },
+          error: function() {
+              alert('Error loading page');
+          }
+      });
+  }
+</script>
 </body>
 </html>
