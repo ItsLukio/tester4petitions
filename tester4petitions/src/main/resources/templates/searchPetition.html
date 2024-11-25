@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Search Petition</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 <h1>Search for a Petition</h1>
@@ -11,20 +10,5 @@
   <input type="text" id="query" name="query" required>
   <button type="submit">Search</button>
 </form>
-<div id="content"></div>
-<script>
-  function loadPage(url) {
-      $.ajax({
-          url: url,
-          method: 'GET',
-          success: function(data) {
-              $('#content').html(data);
-          },
-          error: function() {
-              alert('Error loading page');
-          }
-      });
-  }
-</script>
 </body>
 </html>

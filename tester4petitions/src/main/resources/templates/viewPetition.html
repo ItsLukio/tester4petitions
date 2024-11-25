@@ -2,14 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>View Petition</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 <h1 th:text="${petition.title}">Petition Title</h1>
 <p th:text="${petition.description}">Petition Description</p>
 
 <h2>Sign the Petition</h2>
-<form th:action="@{/petition/{id}/sign(id=${petition.id})}" method="post">
+<form action="/petition/{id}/sign" method="post">
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" required><br><br>
 
@@ -18,20 +17,5 @@
 
     <button type="submit">Sign Petition</button>
 </form>
-<div id="content"></div>
-<script>
-    function loadPage(url) {
-        $.ajax({
-            url: url,
-            method: 'GET',
-            success: function(data) {
-                $('#content').html(data);
-            },
-            error: function() {
-                alert('Error loading page');
-            }
-        });
-    }
-</script>
 </body>
 </html>

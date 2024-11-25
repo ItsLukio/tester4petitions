@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Search Results</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 <h1>Search Results</h1>
@@ -11,24 +10,9 @@
 </div>
 <ul>
   <li th:each="petition : ${results}">
-    <a href="#" th:onclick="'loadPage(\'/petition/' + ${petition.id} + '\')'"
+    <a th:href="@{'/petition/' + ${petition.id}}"
        th:text="${petition.title}"></a>
   </li>
 </ul>
-<div id="content"></div>
-<script>
-  function loadPage(url) {
-      $.ajax({
-          url: url,
-          method: 'GET',
-          success: function(data) {
-              $('#content').html(data);
-          },
-          error: function() {
-              alert('Error loading page');
-          }
-      });
-  }
-</script>
 </body>
 </html>
