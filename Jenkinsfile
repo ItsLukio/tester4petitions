@@ -2,40 +2,30 @@ pipeline {
     agent any
 
     stages {
-        // Stage to get the project from GitHub
         stage('Get Project') {
             steps {
                 git branch: 'master', url: 'https://github.com/ItsLukio/tester4petitions.git'
             }
         }
 
-        // Stage to debug and display workspace contents
-        stage('Debug Workspace') {
-            steps {
-                sh 'pwd'  // Display current directory
-                sh 'ls -la'  // List files and directories in current workspace
-            }
-        }
-
-                stage('Set Permissions') {
+        stage('Set Permissions') {
             steps {
                 // Grant execute permissions to mvnw
                 sh 'chmod +x ./tester4petitions/mvnw'
             }
         }
 
-        // Stage to clean the project and compile dependencies
         stage('Build') {
             steps {
-                sh './tester4petitions/mvnw clean'  // Clean the project
-                sh './tester4petitions/mvnw compile'  // Compile the project
+                // Run Maven commands using the -f option to specify the pom.xml location
+                sh './tester4petitions/mvnw -f ./tester4petitions/pom.xml clean'
+                sh './tester4petitions/mvnw -f ./tester4petitions/pom.xml compile'
             }
         }
 
-        // Stage to run tests
         stage('Test') {
             steps {
-                sh './tester4petitions/mvnw test'  // Run tests
+                sh './tester4petitions/mvnw -f ./tester4petitions/pom.xml test'
             }
             post {
                 always {
@@ -44,14 +34,12 @@ pipeline {
             }
         }
 
-        // Stage to package the project as a WAR file
         stage('Package') {
             steps {
-                sh './tester4petitions/mvnw clean package'  // Package the project
+                sh './tester4petitions/mvnw -f ./tester4petitions/pom.xml clean package'
             }
         }
 
-        // Stage to deploy the application using Docker
         stage('Deploy') {
             steps {
                 // Verify WAR file exists
@@ -69,7 +57,6 @@ pipeline {
         }
     }
 
-    // Post-build actions
     post {
         success {
             // Archive the WAR file after a successful build
