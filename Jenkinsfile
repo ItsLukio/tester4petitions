@@ -17,6 +17,13 @@ pipeline {
             }
         }
 
+                stage('Set Permissions') {
+            steps {
+                // Grant execute permissions to mvnw
+                sh 'chmod +x ./tester4petitions/mvnw'
+            }
+        }
+
         // Stage to clean the project and compile dependencies
         stage('Build') {
             steps {
