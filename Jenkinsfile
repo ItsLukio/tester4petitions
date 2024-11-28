@@ -20,16 +20,15 @@ pipeline {
         // Stage to clean the project and compile dependencies
         stage('Build') {
             steps {
-                sh 'mvn clean:clean'  // Clean the project
-                sh 'mvn dependency:copy-dependencies'  // Copy dependencies
-                sh 'mvn compile'  // Compile the project
+                sh './tester4petitions/mvnw clean'  // Clean the project
+                sh './tester4petitions/mvnw compile'  // Compile the project
             }
         }
 
         // Stage to run tests
         stage('Test') {
             steps {
-                sh 'mvn test'  // Run tests
+                sh './tester4petitions/mvnw test'  // Run tests
             }
             post {
                 always {
@@ -41,21 +40,18 @@ pipeline {
         // Stage to package the project as a WAR file
         stage('Package') {
             steps {
-                sh './mvnw package'  // Package the project using Maven wrapper
+                sh './tester4petitions/mvnw clean package'  // Package the project
             }
         }
 
         // Stage to deploy the application using Docker
         stage('Deploy') {
             steps {
-                // Ensure WAR is built
-                sh './mvnw clean package'
-                
                 // Verify WAR file exists
-                sh 'ls -l target/*.war'
+                sh 'ls -l tester4petitions/target/*.war'
                 
                 // Build Docker image
-                sh 'docker build -t myapp .'
+                sh 'docker build -t myapp tester4petitions/.'
                 
                 // Remove existing container
                 sh 'docker rm -f "myappcontainer" || true'
@@ -70,7 +66,7 @@ pipeline {
     post {
         success {
             // Archive the WAR file after a successful build
-            archiveArtifacts artifacts: '**/tester4petitions/target/*.war', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'tester4petitions/target/*.war', allowEmptyArchive: true
         }
     }
 }
